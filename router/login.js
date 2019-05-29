@@ -1,14 +1,14 @@
 const Router = require('koa-router')
 const UserInfo = require('../models/userInfo.js')
 const router = new Router()
-const userInfoIsExist = require('../dbMethods/userInfoIsExist')
 const ctxHelper = require('../utils/ctxHelper')
+const generateUUID = require('../utils/generateUUID')
 
-router.post('/source-open/register', async(ctx, next) {
+router.post('/source-open/login', async (ctx, next) => {
   const req = ctx.request.body
   try {
-    UserInfo.find(req.userName, (err, result) => {
-      if(err) {
+    await UserInfo.find({ userName: req.userName }, (err, result) => {
+      if (err) {
         ctxHelper(ctx, {
           code: '-1',
           data: null,
@@ -22,11 +22,26 @@ router.post('/source-open/register', async(ctx, next) {
           data: null,
           msg: '用户名或密码错误'
         })
-      }else {
-        console.log(result)
+      } else {
+        if (result[0].password !== req.password) {
+          ctxHelper(ctx, {
+            code: '-1',
+            data: null,
+            msg: '用户名或密码错误'
+          })
+        } else {
+          ctxHelper(ctx, {
+            code: '0',
+            data: result[0],
+            msg: '登录成功'
+          })
+          ctx.session.sssid = generateUUID()
+        }
       }
     })
-  }catch(err) {
-    console.log(err);
+  } catch (err) {
+    console.log(err)
   }
 })
+
+module.exports = router

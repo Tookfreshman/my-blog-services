@@ -37,7 +37,7 @@ function saveAccount(data) {
         return reject(err)
       }
       let res = {
-        code: 0,
+        code: '0',
         data: null,
         msg: '注册成功'
       }
