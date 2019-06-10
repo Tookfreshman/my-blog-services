@@ -1,13 +1,9 @@
 const Router = require('koa-router')
 const router = new Router()
-const userInfoIsExistence = require('./userInfoIsExistence')
-const register = require('./register')
-const login = require('./login')
-const getCurrentUser = require('./getCurrentUser')
+const userController = require('./userController')
+const countController = require('./countController')
 
-router.use('/user-provider', userInfoIsExistence.routes())
-router.use('/user-provider', register.routes())
-router.use('/user-provider', login.routes())
-router.use('/user-provider', getCurrentUser.routes())
+router.use(userController.routes())
+router.use(countController.routes())
 
 module.exports = router

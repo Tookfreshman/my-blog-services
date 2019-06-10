@@ -1,8 +1,9 @@
 const Router = require('koa-router')
-const UserInfo = require('../models/userInfo.js')
+const UserInfo = require('../../models/userInfo.js')
 const router = new Router()
-const userInfoIsExist = require('../dbMethods/userInfoIsExist')
-const ctxHelper = require('../utils/ctxHelper')
+const userInfoIsExist = require('../../dbMethods/userInfoIsExist')
+const ctxHelper = require('../../utils/ctxHelper')
+const decrypt = require('../../utils/decrypt')
 
 router.post('/source-open/register', async (ctx, next) => {
   const req = ctx.request.body
@@ -16,6 +17,8 @@ router.post('/source-open/register', async (ctx, next) => {
     })
   } else {
     try {
+      userModel.password = decrypt(userModel.password, userModel.pt)
+      delete userModel.pt
       let res = await saveAccount(userModel)
       ctxHelper(ctx, res)
     } catch (err) {

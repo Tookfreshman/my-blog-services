@@ -1,8 +1,9 @@
 const Router = require('koa-router')
-const UserInfo = require('../models/userInfo.js')
+const UserInfo = require('../../models/userInfo.js')
 const router = new Router()
-const ctxHelper = require('../utils/ctxHelper')
-const generateUUID = require('../utils/generateUUID')
+const ctxHelper = require('../../utils/ctxHelper')
+const generateUUID = require('../../utils/generateUUID')
+const decrypt = require('../../utils/decrypt')
 
 router.post('/source-open/login', async (ctx, next) => {
   const req = ctx.request.body
@@ -23,7 +24,8 @@ router.post('/source-open/login', async (ctx, next) => {
           msg: '用户名或密码错误'
         })
       } else {
-        if (result[0].password !== req.password) {
+        let password = decrypt(req.password, req.pt)
+        if (result[0].password !== password) {
           ctxHelper(ctx, {
             code: '-1',
             data: null,
@@ -35,7 +37,7 @@ router.post('/source-open/login', async (ctx, next) => {
             data: result[0],
             msg: '登录成功'
           })
-          ctx.session.sssid = generateUUID()
+          ctx.session.sssid = generateUUID() + '-' + result[0]._id
         }
       }
     })

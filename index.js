@@ -4,6 +4,7 @@ const bodyParser = require('koa-bodyparser')
 const initDb = require('./mongo')
 const router = require('./router')
 const session = require('koa-session')
+require('./utils/throwError')
 
 app.keys = ['abasdnfksandfsdakjfnkjasdnfjkasndgjhesfbgfg']
 
