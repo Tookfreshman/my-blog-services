@@ -5,3 +5,11 @@ global.throwError = function(ctx) {
     msg: 'System Error'
   }
 }
+
+global.needLogin = function(ctx) {
+  ctx.body = {
+    code: '401',
+    data: null,
+    msg: '未登录'
+  }
+}
