@@ -4,6 +4,7 @@ const bodyParser = require('koa-bodyparser')
 const initDb = require('./mongo')
 const router = require('./router')
 const session = require('koa-session')
+const ctxHelper = require('./utils/ctxHelper')
 require('./utils/globalMethods')
 
 app.keys = ['abasdnfksandfsdakjfnkjasdnfjkasndgjhesfbgfg']
@@ -24,6 +25,14 @@ app.use(session(CONFIG, app))
 initDb()
 
 app.use(bodyParser())
+
+app.use(async (ctx, next) => {
+  if (ctx.request.url.indexOf('/source-open') === -1 && !ctx.session.sssid) {
+    needLogin(ctx)
+  } else {
+    await next()
+  }
+})
 app.use(router.routes())
 app.use(router.allowedMethods())
 app.listen(9527)

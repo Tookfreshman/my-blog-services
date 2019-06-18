@@ -3,15 +3,14 @@ const UserBrief = require('../../models/userBrief.js')
 const ctxHelper = require('../../utils/ctxHelper')
 const router = new Router()
 
-router.get('/getUserBrief', async ctx => {
-  let sess = ctx.session.sssid
+router.get('/source-open/getUserBriefByUserId', async ctx => {
   try {
-    let userId = sess.split('-')[5]
-    let [result] = await UserBrief.find({ userId })
-    if (result) {
+    let userId = ctx.query.userId
+    let [res] = await UserBrief.find({ userId })
+    if (res) {
       ctxHelper(ctx, {
         code: '0',
-        data: result,
+        data: res,
         msg: '查询成功'
       })
     } else {
@@ -24,8 +23,8 @@ router.get('/getUserBrief', async ctx => {
       })
     }
   } catch (err) {
+    console.log(err)
     throwError(ctx)
-    console.log(error)
   }
 })
 

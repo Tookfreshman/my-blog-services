@@ -4,9 +4,6 @@ const ctxHelper = require('../../utils/ctxHelper')
 const router = new Router()
 
 router.post('/uploadUserSetting', async ctx => {
-  if (!ctx.session.sssid) {
-    needLogin(ctx)
-  }
   let data = ctx.request.body
   let result = await UserBrief.findOneAndUpdate({ userId: data.userId }, data, {
     upsert: true,

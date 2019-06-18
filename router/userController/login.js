@@ -32,6 +32,8 @@ router.post('/source-open/login', async (ctx, next) => {
               ...result._doc,
               ...data._doc
             }
+          } else {
+            data = result._doc
           }
           ctxHelper(ctx, {
             code: '0',

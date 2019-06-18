@@ -12,7 +12,7 @@ router.get('/source-open/getAllProvinceAndCitys', async ctx => {
       msg: '查询成功'
     })
   } catch (err) {
-    throwError()
+    throwError(ctx)
     console.log(err)
   }
 })
