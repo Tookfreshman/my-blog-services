@@ -4,7 +4,9 @@ const config = require('../config/mongo-config.js')
 const { hostName, port, dbname } = config
 
 const dbUrl = `mongodb://${hostName}:${port}/${dbname}`
-console.log(dbUrl)
+
+mongoose.set('useFindAndModify', false)
+mongoose.set('useNewUrlParser', true)
 
 mongoose.connection.on('connected', function() {
   console.log('Mongoose connection open to ' + dbUrl)

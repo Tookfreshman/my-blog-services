@@ -4,6 +4,7 @@ const router = new Router()
 const userInfoIsExist = require('../../dbMethods/userInfoIsExist')
 const ctxHelper = require('../../utils/ctxHelper')
 const decrypt = require('../../utils/decrypt')
+const mongoose = require('mongoose')
 
 router.post('/source-open/register', async (ctx, next) => {
   const req = ctx.request.body
@@ -19,6 +20,7 @@ router.post('/source-open/register', async (ctx, next) => {
     try {
       userModel.password = decrypt(userModel.password, userModel.pt)
       delete userModel.pt
+      userModel.userId = mongoose.Types.ObjectId()
       let res = await saveAccount(userModel)
       ctxHelper(ctx, res)
     } catch (err) {

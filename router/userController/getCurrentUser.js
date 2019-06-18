@@ -1,38 +1,39 @@
 const Router = require('koa-router')
 const UserInfo = require('../../models/userInfo.js')
+const UserBrief = require('../../models/userBrief.js')
 const ctxHelper = require('../../utils/ctxHelper')
 const router = new Router()
 
-router.get('/source-open/getCurrentUser', async (ctx, next) => {
+router.get('/source-open/getCurrentUser', async ctx => {
   let sess = ctx.session.sssid
   if (sess) {
-    let id = sess.split('-')[5]
+    let userId = sess.split('-')[5]
     try {
-      await UserInfo.find({ _id: id }, (err, result) => {
-        if (err) {
-          ctxHelper(ctx, {
-            code: '-1',
-            data: null,
-            msg: 'Systems Error'
-          })
-          return
+      let [result] = await UserInfo.find({ userId })
+      if (result.length === 0) {
+        ctxHelper(ctx, {
+          code: '-1',
+          data: null,
+          msg: 'Systems Error'
+        })
+      } else {
+        let data = {
+          ...result._doc
         }
-        if (result.length === 0) {
-          ctxHelper(ctx, {
-            code: '-1',
-            data: null,
-            msg: 'Systems Error'
-          })
-        } else {
-          let data = result[0]
-          delete data.password
-          ctxHelper(ctx, {
-            code: '0',
-            data: data,
-            msg: null
-          })
+        delete data.password
+        let [data1] = await UserBrief.find({ userId })
+        if (data1) {
+          data = {
+            ...data,
+            ...data1._doc
+          }
         }
-      })
+        ctxHelper(ctx, {
+          code: '0',
+          data: data,
+          msg: null
+        })
+      }
     } catch (err) {
       console.log(err)
     }
