@@ -7,6 +7,12 @@ const Blogs = new Schema(
     title: String,
     articleType: String,
     article: String,
+    author: String,
+    desc: String,
+    viewerCount: {
+      type: Number,
+      default: 0
+    },
     publishTime: { type: Date, default: Date.now }
   },
   { versionKey: false }

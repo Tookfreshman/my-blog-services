@@ -9,7 +9,7 @@ const decrypt = require('../../utils/decrypt')
 router.post('/source-open/login', async (ctx, next) => {
   const req = ctx.request.body
   try {
-    let [result] = await UserInfo.find({ userName: req.userName })
+    let [result] = await UserInfo.find({ userName: req.userName }, { _id: 0 })
     if (!result) {
       ctxHelper(ctx, {
         code: '-1',
@@ -26,7 +26,10 @@ router.post('/source-open/login', async (ctx, next) => {
         })
       } else {
         try {
-          let [data] = await UserBrief.find({ userId: result.userId })
+          let [data] = await UserBrief.find(
+            { userId: result.userId },
+            { _id: 0 }
+          )
           if (data) {
             data = {
               ...result._doc,

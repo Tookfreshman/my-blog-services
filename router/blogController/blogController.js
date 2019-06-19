@@ -11,12 +11,16 @@ router.post('/publishBlog', async (ctx, next) => {
     data: null,
     msg: ''
   }
-  if (req.title.length === 0) {
+  if (!req.title) {
     res.msg = '文章标题不能为空'
-  } else if (req.articleType.length === 0) {
-    res.msg = '文章标题不能为空'
-  } else if (req.article.length === 7) {
+  } else if (!req.articleType) {
+    res.msg = '文章类型不能为空'
+  } else if (!req.article) {
     res.msg = '文章内容不能为空'
+  } else if (!req.author) {
+    res.msg = '文章作者不能为空'
+  } else if (!req.desc) {
+    res.msg = '文章摘要不能为空'
   } else {
     try {
       res = await saveBlogs(blogModel)
@@ -30,7 +34,6 @@ router.post('/publishBlog', async (ctx, next) => {
     }
   }
   ctxHelper(ctx, res)
-  console.log(req)
 })
 
 function saveBlogs(data) {
@@ -43,7 +46,7 @@ function saveBlogs(data) {
       let res = {
         code: '0',
         data: null,
-        msg: '操作成功'
+        msg: '发布成功'
       }
       return resolve(res)
     })
