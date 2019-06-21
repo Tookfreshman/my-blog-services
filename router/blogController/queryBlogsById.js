@@ -1,17 +1,16 @@
 const Router = require('koa-router')
+const Blogs = require('../../models/blogs')
 const ctxHelper = require('../../utils/ctxHelper')
-const Blogs = require('../../models/blogs.js')
 const router = new Router()
 
-router.get('/source-open/getRecentlyBlogs', async ctx => {
+router.get('/source-open/queryBlogsById', async (ctx, next) => {
+  const req = ctx.request.query
   let res
   try {
-    res = await Blogs.find({})
-      .sort({ publishTime: -1 })
-      .limit(10)
+    res = await Blogs.findById({ _id: req.id })
   } catch (err) {
     console.log(err)
-    throwError()
+    throwError(ctx)
   }
   ctxHelper(ctx, {
     code: '0',
