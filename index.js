@@ -29,7 +29,26 @@ app.use(bodyParser())
 app.use(async (ctx, next) => {
   if (ctx.request.url.indexOf('/source-open') === -1 && !ctx.session.sssid) {
     needLogin(ctx)
+  } else if (ctx.request.url.indexOf('/publishBlog') !== -1) {
+    let sess = ctx.session.sssid
+    if (sess) {
+      let needAuthentication = sess.split('-')[6]
+      if (needAuthentication) {
+        ctxHelper(ctx, {
+          code: '333',
+          data: null,
+          msg: '需要完善信息'
+        })
+      } else {
+        await next()
+      }
+    }
   } else {
+    let sess = ctx.session.sssid
+    if (sess) {
+      let needAuthentication = sess.split('-')[6]
+      console.log(needAuthentication)
+    }
     await next()
   }
 })

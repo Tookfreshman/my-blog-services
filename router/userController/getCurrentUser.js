@@ -8,7 +8,7 @@ router.get('/getCurrentUser', async ctx => {
   let sess = ctx.session.sssid
   let userId = sess.split('-')[5]
   try {
-    let [result] = await UserInfo.find({ userId }, { _id: 0 })
+    let [result] = await UserInfo.find({ userId }, { _id: 0, password: 0 })
     if (!result) {
       ctxHelper(ctx, {
         code: '-1',
@@ -19,7 +19,6 @@ router.get('/getCurrentUser', async ctx => {
       let data = {
         ...result._doc
       }
-      delete data.password
       let [data1] = await UserBrief.find({ userId }, { _id: 0 })
       if (data1) {
         data = {

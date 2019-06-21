@@ -18,6 +18,7 @@ router.post('/source-open/login', async (ctx, next) => {
       })
     } else {
       let password = decrypt(req.password, req.pt)
+      let needAuthentication = true
       if (result.password !== password) {
         ctxHelper(ctx, {
           code: '-1',
@@ -35,9 +36,15 @@ router.post('/source-open/login', async (ctx, next) => {
               ...result._doc,
               ...data._doc
             }
+            if (data.nickName) {
+              needAuthentication = false
+            }
           } else {
-            data = result._doc
+            data = {
+              ...result._doc
+            }
           }
+          delete data.password
           ctxHelper(ctx, {
             code: '0',
             data: data,
@@ -46,7 +53,9 @@ router.post('/source-open/login', async (ctx, next) => {
         } catch (err) {
           console.log(err)
         }
-        ctx.session.sssid = generateUUID() + '-' + result.userId
+
+        ctx.session.sssid =
+          generateUUID() + '-' + result.userId + '-' + needAuthentication
       }
     }
   } catch (err) {

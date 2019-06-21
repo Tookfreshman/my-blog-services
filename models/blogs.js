@@ -13,7 +13,7 @@ const Blogs = new Schema(
       type: Number,
       default: 0
     },
-    publishTime: { type: Date, default: Date.now }
+    publishTime: { type: Date, default: new Date() }
   },
   { versionKey: false }
 )

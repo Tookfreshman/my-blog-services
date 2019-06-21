@@ -3,7 +3,7 @@ const router = new Router()
 const userInfoIsExist = require('../../dbMethods/userInfoIsExist')
 const ctxHelper = require('../../utils/ctxHelper')
 
-router.get('/source-open/userInfoIsExistence', async (ctx, next) => {
+router.get('/source-open/userNameIsExistence', async (ctx, next) => {
   const req = ctx.request.query
   let isExist = false
   if (req.userName) {

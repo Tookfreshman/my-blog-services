@@ -18,7 +18,7 @@ const userBrief = new Schema(
     },
     bornDate: {
       type: String,
-      default: ''
+      default: null
     },
     sex: {
       type: Number,
