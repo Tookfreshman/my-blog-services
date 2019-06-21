@@ -33,7 +33,7 @@ app.use(async (ctx, next) => {
     let sess = ctx.session.sssid
     if (sess) {
       let needAuthentication = sess.split('-')[6]
-      if (needAuthentication) {
+      if (needAuthentication === 'true') {
         ctxHelper(ctx, {
           code: '333',
           data: null,
@@ -44,11 +44,6 @@ app.use(async (ctx, next) => {
       }
     }
   } else {
-    let sess = ctx.session.sssid
-    if (sess) {
-      let needAuthentication = sess.split('-')[6]
-      console.log(needAuthentication)
-    }
     await next()
   }
 })
