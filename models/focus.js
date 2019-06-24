@@ -15,6 +15,14 @@ const focus = new Schema(
       default: () => {
         return []
       }
+    },
+    fansNum: {
+      type: Number,
+      default: 0
+    },
+    focusNum: {
+      type: Number,
+      default: 0
     }
   },
   { versionKey: false }
