@@ -2,6 +2,7 @@ const Router = require('koa-router')
 const ctxHelper = require('../../utils/ctxHelper')
 const router = new Router()
 const Focus = require('../../models/focus.js')
+const UserBrief = require('../../models/userBrief.js')
 
 // 关注某人
 router.patch('/focusSomeone', async ctx => {
@@ -89,10 +90,13 @@ router.get('/isFocusSomeone', async ctx => {
 })
 
 // 根据userId查询当前用户的粉丝和关注的人
-router.get('/source-open/findFansAndFocusByuserId', async ctx => {
+router.get('/source-open/findFansAndFocusByUserId', async ctx => {
   try {
     let userId = ctx.query.userId
-    let res = await Focus.findOne({ userId }, { focus: 0, fans: 0 })
+    let res = await Focus.findOne(
+      { userId },
+      { fansNum: 1, focusNum: 1, _id: 0 }
+    )
     if (res) {
       ctxHelper(ctx, {
         code: '0',
@@ -110,6 +114,72 @@ router.get('/source-open/findFansAndFocusByuserId', async ctx => {
         msg: '查询成功'
       })
     }
+  } catch (err) {
+    console.log(err)
+    throwError(ctx)
+  }
+})
+
+// 根据userId查询当前用户的所有关注信息
+router.get('/findFocusDataByUserId', async ctx => {
+  try {
+    let userId = ctx.query.userId
+    let res = await Focus.findOne({ userId }, { userId: 0, _id: 0 })
+    // 如果这时候关注信息还为空的话
+    if (!res) {
+      let data = {
+        fansList: [],
+        focusList: [],
+        fansNum: 0,
+        focusNum: 0
+      }
+      ctxHelper(ctx, {
+        code: '0',
+        data: data,
+        msg: '查询成功'
+      })
+      return
+    }
+    let data = {
+      ...res._doc
+    }
+    if (data.fans.length > 0) {
+      try {
+        let fansList = await UserBrief.find(
+          { userId: { $in: data.fans } },
+          { portraitUrl: 1, nickName: 1, userName: 1, userId: 1, _id: 0 }
+        )
+        data.fansList = fansList
+      } catch (err) {
+        console.log(err)
+        throwError(ctx)
+        return
+      }
+    } else {
+      data.fansList = []
+    }
+    if (data.focus.length > 0) {
+      try {
+        let focusList = await UserBrief.find(
+          { userId: { $in: data.focus } },
+          { portraitUrl: 1, nickName: 1, userName: 1, userId: 1, _id: 0 }
+        )
+        data.focusList = focusList
+      } catch (err) {
+        console.log(err)
+        throwError(ctx)
+        return
+      }
+    } else {
+      data.focusList = []
+    }
+    delete data.fans
+    delete data.focus
+    ctxHelper(ctx, {
+      code: '0',
+      data: data,
+      msg: '查询成功'
+    })
   } catch (err) {
     console.log(err)
     throwError(ctx)

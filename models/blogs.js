@@ -9,6 +9,14 @@ const Blogs = new Schema(
     article: String,
     author: String,
     desc: String,
+    blogImgUrl: {
+      type: String,
+      default: ''
+    },
+    blogImgName: {
+      type: String,
+      default: ''
+    },
     viewerCount: {
       type: Number,
       default: 0

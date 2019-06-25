@@ -4,6 +4,10 @@ const Schema = mongoose.Schema
 const userBrief = new Schema(
   {
     userId: Schema.Types.ObjectId,
+    userName: {
+      type: String,
+      default: ''
+    },
     portraitUrl: {
       type: String,
       default: ''

@@ -27,9 +27,13 @@ initDb()
 app.use(bodyParser())
 
 app.use(async (ctx, next) => {
-  if (ctx.request.url.indexOf('/source-open') === -1 && !ctx.session.sssid) {
+  const requestUrl = ctx.request.url
+  if (requestUrl.indexOf('/source-open') === -1 && !ctx.session.sssid) {
     needLogin(ctx)
-  } else if (ctx.request.url.indexOf('/publishBlog') !== -1) {
+  } else if (
+    requestUrl.indexOf('/publishBlog') !== -1 ||
+    requestUrl.indexOf('/focusSomeone') !== -1
+  ) {
     let sess = ctx.session.sssid
     if (sess) {
       let needAuthentication = sess.split('-')[6]
